@@ -1,0 +1,91 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+
+  <display-name>Archetype Created Web Application</display-name>
+  <servlet>
+  	<servlet-name>LoginCTL</servlet-name>
+  	<display-name>LoginCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.LoginCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>RegistrationCTL</servlet-name>
+  	<display-name>RegistrationCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.RegistrationCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>HomeCTL</servlet-name>
+  	<display-name>HomeCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.HomeCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>NavCTL</servlet-name>
+  	<display-name>NavCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.NavCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>WelcomeCTL</servlet-name>
+  	<display-name>WelcomeCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.WelcomeCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>UserListCTL</servlet-name>
+  	<display-name>UserListCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.UserListCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>ForgotPasswordCTL</servlet-name>
+  	<display-name>ForgotPasswordCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.ForgotPasswordCTL</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>UploadImageCTL</servlet-name>
+  	<display-name>UploadImageCTL</display-name>
+  	<description></description>
+  	<servlet-class>com.controller.UploadImageCTL</servlet-class>
+  </servlet>
+   <servlet-mapping>
+  	<servlet-name>LoginCTL</servlet-name>
+  	<url-pattern>/LoginCTL</url-pattern>
+  </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>RegistrationCTL</servlet-name>
+   	<url-pattern>/RegistrationCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>HomeCTL</servlet-name>
+   	<url-pattern>/HomeCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>NavCTL</servlet-name>
+   	<url-pattern>/NavCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>WelcomeCTL</servlet-name>
+   	<url-pattern>/WelcomeCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>UserListCTL</servlet-name>
+   	<url-pattern>/UserListCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>ForgotPasswordCTL</servlet-name>
+   	<url-pattern>/ForgotPasswordCTL</url-pattern>
+   </servlet-mapping>
+   <servlet-mapping>
+   	<servlet-name>UploadImageCTL</servlet-name>
+   	<url-pattern>/UploadImageCTL</url-pattern>
+   </servlet-mapping>
+   <welcome-file-list>
+	 <welcome-file>main.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>
