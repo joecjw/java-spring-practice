@@ -19,16 +19,28 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    private final Long refreshTokenDurationMs = 86400000L;
+    //RefreshToken Timeout set to
+    private final Long refreshTokenDurationMs = 1000L * 60 * 4;
 
     private RefreshTokenRepository refreshTokenRepository;
 
     private UserRepository userRepository;
 
     public RefreshToken createRefreshToken(Long userId) {
-        RefreshToken refreshToken = new RefreshToken();
 
         User user = userRepository.findById(userId).get();
+
+        if(user.getRefreshToken() != null){
+            //update instead
+            user.getRefreshToken().setUser(user);
+            user.getRefreshToken().setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+            user.getRefreshToken().setToken(UUID.randomUUID().toString());
+            RefreshToken refreshToken = refreshTokenRepository.save(user.getRefreshToken());
+            userRepository.save(user);
+            return  refreshToken;
+        }
+
+        RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
@@ -40,11 +52,6 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
     }
 
     @Override
-    public int deleteByUserId(Long userId) {
-        return  refreshTokenRepository.deleteByUser(userRepository.findById(userId).get());
-    }
-
-    @Override
     public JwtResponse getNewTokenFromRefreshToken(String requestRefreshToken) {
         //find refresh token in DB
         RefreshToken refreshToken = refreshTokenRepository.findByToken(requestRefreshToken)
@@ -52,10 +59,9 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                          " is not in database!"));
 
         //verify the found refresh token
-        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0) {
-            refreshTokenRepository.delete(refreshToken);
+        if (refreshToken.getExpiryDate().compareTo(Instant.now()) > 0) {
             throw new TokenRefreshException("Refresh token: " + refreshToken.getToken()
-                    + " was expired. Please make a new signin request");
+                    + " was expired. Please make a new login request");
         }
 
         //create new JwtToken
@@ -73,7 +79,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         jwtResponse.setJwtToken(newJwtToken);
         jwtResponse.setRefreshToken(refreshToken.getToken());
         jwtResponse.setEmail(user.getEmail());
-        jwtResponse.setUsername(user.getUsername());
+        jwtResponse.setUsername(user.getUsername().substring(0,user.getUsername().indexOf(":")-1));
         jwtResponse.setRoles(roles);
 
         return jwtResponse;

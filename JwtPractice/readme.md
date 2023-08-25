@@ -107,3 +107,67 @@ Spring Security with JWT authentication and authorization
           with the created UsernamePasswordAuthenticationToken object
 
 8.Create models for RegisterRequest, AuthenticationRequest and AuthenticationResponse
+
+API Endpoints
+Public for user authentication, base url: localhost:8080/api/auth
+1. localhost:8080/api/auth/register
+Method: POST
+
+Request Body:
+@NotBlank
+String firstName;
+@NotBlank
+String lastName;
+@NotBlank
+String password;
+@Email
+String email;
+@NotBlank
+String role; ("user" or "admin)
+
+Response: Status Code - 201
+Response Body:
+"jwtToken": String
+"type": "Bearer",
+"refreshToken": String,
+"userId": Long,
+"username": String,
+"email": String,
+"roles": String array ("ROLE_USER" or "ROLE_ADMIN)
+
+2. localhost:8080/api/auth/login
+Method: POST
+
+Request Body:  
+String userNameEmail; (format: "firstName"(one_empty_space)"lastName":"password")
+
+Response: Status Code - 200
+Response Body:
+"jwtToken": String
+"type": "Bearer",
+"refreshToken": String,
+"userId": Long,
+"username": String,
+"email": String,
+"roles": String array ("ROLE_USER" or "ROLE_ADMIN)
+
+
+3. localhost:8080/api/auth/refreshtoken
+Method: POST
+Request Body:
+@NotBlank
+String refreshToken;
+
+Response: Status Code - 200
+Response Body:
+"jwtToken": String
+"type": "Bearer",
+"refreshToken": String,
+"userId": Long,
+"username": String,
+"email": String,
+"roles": String array ("ROLE_USER" or "ROLE_ADMIN)
+
+Role Based Authentication
+Response Code - 401 Unauthorized (unverified user did not send request with authorization header or bearer token)
+Response Code - 403 Forbidden (Role criteria not satisfied, access denied, verified user send request with access token)

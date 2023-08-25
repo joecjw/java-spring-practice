@@ -25,7 +25,8 @@ public class JwtService {
 
     private static final String SECRET_KEY = "GCDj3a9hm71Aa+lhH9sEi4W/6epgbzVI5EWSeTy2SrqyY+ETlIz3LTprSpofSWz4";
 
-    private static final Long EXPIRATION_TIME = 1000L * 60 * 24;
+    //AccessToken Timeout set to 2 min
+    private static final Long EXPIRATION_TIME = 1000L * 60 * 2;
 
     public static String generateJwtToken(UserDetails userDetails){
         return generateJwtToken(new HashMap<>(), userDetails);
@@ -54,11 +55,10 @@ public class JwtService {
 
     public boolean isJwtTokenValid(String jwtToken, UserDetails userDetails){
         final String userNameEmail = extractUserNameEmail(jwtToken);
-        return (userNameEmail.equals(userDetails.getUsername())
-                && !isJwtTokenExpired(jwtToken));
+        return userNameEmail.equals(userDetails.getUsername());
     }
 
-    private boolean isJwtTokenExpired(String jwtToken) {
+    public boolean isJwtTokenExpired(String jwtToken) {
         return extractExpiration(jwtToken).before(new Date());
     }
 
@@ -66,26 +66,13 @@ public class JwtService {
         return extractClaim(jwtToken, Claims::getExpiration);
     }
 
-    public static Claims extractAllClaims(String jwtToken){
+    public static Claims extractAllClaims(String jwtToken) throws SignatureException, MalformedJwtException, ExpiredJwtException, UnsupportedJwtException,IllegalArgumentException{
         Claims claims = null;
-        try{
-            claims = Jwts
-                    .parser()
-                    .setSigningKey(getSignInKey())
-                    .parseClaimsJws(jwtToken)
-                    .getBody();
-        }catch (SignatureException e) {
-            logger.error("Invalid JWT signature: {}", e.getMessage());
-        } catch (MalformedJwtException e) {
-            logger.error("Invalid JWT token: {}", e.getMessage());
-        } catch (ExpiredJwtException e) {
-            logger.error("JWT token is expired: {}", e.getMessage());
-        } catch (UnsupportedJwtException e) {
-            logger.error("JWT token is unsupported: {}", e.getMessage());
-        } catch (IllegalArgumentException e) {
-            logger.error("JWT claims string is empty: {}", e.getMessage());
-        }
-
+        claims = Jwts
+                .parser()
+                .setSigningKey(getSignInKey())
+                .parseClaimsJws(jwtToken)
+                .getBody();
         return claims;
     }
 

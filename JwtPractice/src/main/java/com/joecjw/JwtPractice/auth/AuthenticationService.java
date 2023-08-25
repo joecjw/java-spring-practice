@@ -8,7 +8,6 @@ import com.joecjw.JwtPractice.repository.UserRepository;
 import com.joecjw.JwtPractice.security.jwt.JwtService;
 import com.joecjw.JwtPractice.service.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,7 +61,7 @@ public class AuthenticationService {
         jwtResponse.setType("Bearer");
         jwtResponse.setJwtToken(JwtService.generateJwtToken(_user));
         jwtResponse.setEmail(_user.getEmail());
-        jwtResponse.setUsername(_user.getUsername());
+        jwtResponse.setUsername(user.getUsername().substring(0,user.getUsername().indexOf(":")-1));
         jwtResponse.setRoles(roles);
         return jwtResponse;
     }
@@ -100,7 +99,7 @@ public class AuthenticationService {
         jwtResponse.setJwtToken(jwtToken);
         jwtResponse.setRefreshToken(refreshToken.getToken());
         jwtResponse.setEmail(user.getEmail());
-        jwtResponse.setUsername(user.getUsername());
+        jwtResponse.setUsername(user.getUsername().substring(0,user.getUsername().indexOf(":")-1));
         jwtResponse.setRoles(roles);
 
         return jwtResponse;

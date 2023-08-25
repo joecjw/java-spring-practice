@@ -1,12 +1,10 @@
 package com.joecjw.JwtPractice.auth;
 
-import com.joecjw.JwtPractice.entity.User;
 import com.joecjw.JwtPractice.service.RefreshTokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,11 +38,5 @@ public class AuthenticationController {
         return new ResponseEntity<>(refreshTokenService.getNewTokenFromRefreshToken(requestRefreshToken), HttpStatus.OK);
     }
 
-    @PostMapping("/signout")
-    public ResponseEntity<?> logoutUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long userId = user.getId();
-        refreshTokenService.deleteByUserId(userId);
-        return ResponseEntity.ok("Log out successful!");
-    }
+
 }
