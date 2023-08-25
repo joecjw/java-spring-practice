@@ -80,7 +80,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         jwtResponse.setJwtToken(newJwtToken);
         jwtResponse.setRefreshToken(refreshToken.getToken());
         jwtResponse.setEmail(user.getEmail());
-        jwtResponse.setUsername(user.getUsername().substring(0,user.getUsername().indexOf(":")-1));
+        jwtResponse.setUsername(user.getUsername().substring(0,user.getUsername().indexOf(":")));
         jwtResponse.setRoles(roles);
 
         return jwtResponse;
