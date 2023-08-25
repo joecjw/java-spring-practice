@@ -11,6 +11,7 @@ import com.joecjw.JwtPractice.service.RefreshTokenService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
-    //RefreshToken Timeout set to
+    //RefreshToken Timeout set to 4 mins
     private final Long refreshTokenDurationMs = 1000L * 60 * 4;
 
     private RefreshTokenRepository refreshTokenRepository;
@@ -33,7 +34,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
         if(user.getRefreshToken() != null){
             //update instead
             user.getRefreshToken().setUser(user);
-            user.getRefreshToken().setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+            user.getRefreshToken().setExpiryDate(new Date(System.currentTimeMillis() + refreshTokenDurationMs));
             user.getRefreshToken().setToken(UUID.randomUUID().toString());
             RefreshToken refreshToken = refreshTokenRepository.save(user.getRefreshToken());
             userRepository.save(user);
@@ -42,7 +43,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
-        refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
+        refreshToken.setExpiryDate(new Date(System.currentTimeMillis() + refreshTokenDurationMs));
         refreshToken.setToken(UUID.randomUUID().toString());
 
         refreshToken = refreshTokenRepository.save(refreshToken);
@@ -59,7 +60,7 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                          " is not in database!"));
 
         //verify the found refresh token
-        if (refreshToken.getExpiryDate().compareTo(Instant.now()) > 0) {
+        if (refreshToken.getExpiryDate().compareTo(new Date(System.currentTimeMillis())) < 0) {
             throw new TokenRefreshException("Refresh token: " + refreshToken.getToken()
                     + " was expired. Please make a new login request");
         }

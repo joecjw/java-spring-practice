@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import java.time.Instant;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -24,7 +25,7 @@ public class RefreshToken {
     private String token;
 
     @Column(nullable = false)
-    private Instant expiryDate;
+    private Date expiryDate;
 
     @JsonIgnore
     @OneToOne(
