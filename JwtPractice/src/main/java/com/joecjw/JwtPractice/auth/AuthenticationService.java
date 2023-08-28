@@ -3,6 +3,7 @@ package com.joecjw.JwtPractice.auth;
 import com.joecjw.JwtPractice.entity.RefreshToken;
 import com.joecjw.JwtPractice.entity.Role;
 import com.joecjw.JwtPractice.entity.User;
+import com.joecjw.JwtPractice.exception.InvalidUsernameException;
 import com.joecjw.JwtPractice.exception.UsernameEmailNotFoundException;
 import com.joecjw.JwtPractice.repository.UserRepository;
 import com.joecjw.JwtPractice.security.jwt.JwtService;
@@ -66,14 +67,15 @@ public class AuthenticationService {
         return jwtResponse;
     }
 
-    public JwtResponse login(AuthenticationRequest request) {
+    public JwtResponse login(AuthenticationRequest request) throws InvalidUsernameException {
         Authentication authentication = new UsernamePasswordAuthenticationToken(
                 request.getUserNameEmail(), request.getPassword());
         authenticationManager.authenticate(authentication);
 
         String[] index = request.getUserNameEmail().split(":");
-        String firstName = index[0].split(" ")[0].trim();
-        String lastName = index[0].split(" ")[1].trim();
+        String[] name = index[0].split(" ");
+        String firstName = name[0].trim();
+        String lastName = name[1].trim();
         String email = index[1].trim();
 
         User user = userRepository.findAllByFirstNameAndLastNameAndEmail(firstName, lastName, email)
