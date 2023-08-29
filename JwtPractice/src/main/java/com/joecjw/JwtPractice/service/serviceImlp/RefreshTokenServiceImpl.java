@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     //RefreshToken Timeout set to 4 mins
-    private final Long refreshTokenDurationMs = 1000L * 60 * 4;
+    private final Long refreshTokenDurationMs = 1000L * 60 * 2;
 
     private RefreshTokenRepository refreshTokenRepository;
 
@@ -53,6 +53,10 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
 
     @Override
     public JwtResponse getNewTokenFromRefreshToken(String requestRefreshToken) {
+        if(requestRefreshToken.isEmpty() || requestRefreshToken.isBlank()){
+            throw new TokenRefreshException("Invalid Refresh Token");
+        }
+
         //find refresh token in DB
         RefreshToken refreshToken = refreshTokenRepository.findByToken(requestRefreshToken)
                 .orElseThrow(() -> new TokenRefreshException("Refresh token: " + requestRefreshToken +

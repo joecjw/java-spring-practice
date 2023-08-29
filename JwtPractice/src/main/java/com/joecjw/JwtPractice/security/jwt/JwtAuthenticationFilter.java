@@ -21,6 +21,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -34,7 +36,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
 
     private final UserDetailsServiceImpl userDetailsImpl;
-
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private void overWriteResponse(HttpServletRequest request, HttpServletResponse response, Exception e) throws IOException {
@@ -55,6 +56,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
+        if(request.getRequestURI().matches("/api/auth/(.*)") || request.getRequestURI().compareTo("/error") == 0){
+            //public path, no auth needed, pass to next filter
+            SecurityContextHolder.getContext().setAuthentication(null);
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
@@ -78,18 +85,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (SignatureException e) {
                 logger.error("Invalid JWT signature: {}", e.getMessage());
                 overWriteResponse(request, response, new Exception(e.getMessage()));
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return;
             } catch (MalformedJwtException e) {
                 logger.error("Invalid JWT token: {}", e.getMessage());
-            overWriteResponse(request, response, new Exception(e.getMessage()));
+                overWriteResponse(request, response, new Exception(e.getMessage()));
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return;
             } catch (ExpiredJwtException e) {
                 logger.error("JWT token is expired: {}", e.getMessage());
-            overWriteResponse(request, response, new Exception(e.getMessage()));
+                overWriteResponse(request, response, new Exception(e.getMessage()));
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return;
             } catch (UnsupportedJwtException e) {
                 logger.error("JWT token is unsupported: {}", e.getMessage());
-            overWriteResponse(request, response, new Exception(e.getMessage()));
+                overWriteResponse(request, response, new Exception(e.getMessage()));
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return;
             } catch (IllegalArgumentException e) {
                 logger.error("JWT claims string is empty: {}", e.getMessage());
-            overWriteResponse(request, response, new Exception(e.getMessage()));
+                overWriteResponse(request, response, new Exception(e.getMessage()));
+                SecurityContextHolder.getContext().setAuthentication(null);
+                return;
             }
 
         //Extract username and user email from JWT token

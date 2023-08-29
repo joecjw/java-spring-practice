@@ -12,10 +12,10 @@ import java.util.List;
 @NoArgsConstructor
 public class JwtResponse {
 
+    private Long userId;
     private String jwtToken;
     private String type = "Bearer";
     private String refreshToken;
-    private Long userId;
     private String username;
     private String email;
     private List<String> roles;

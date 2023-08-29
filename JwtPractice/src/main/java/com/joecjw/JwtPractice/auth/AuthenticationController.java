@@ -6,14 +6,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
-import java.util.Map;
 
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -45,10 +41,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refreshtoken")
-    public ResponseEntity<?> refreshtoken(@RequestBody @Valid TokenRefreshRequest request) {
-        String requestRefreshToken = request.getRefreshToken();
-
-        return new ResponseEntity<>(refreshTokenService.getNewTokenFromRefreshToken(requestRefreshToken), HttpStatus.OK);
+    public ResponseEntity<?> refreshtoken(@RequestHeader("RefreshToken") String refreshToken) {
+        return new ResponseEntity<>(refreshTokenService.getNewTokenFromRefreshToken(refreshToken), HttpStatus.OK);
     }
 
 

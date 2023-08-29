@@ -25,8 +25,8 @@ public class JwtService {
 
     private static final String SECRET_KEY = "GCDj3a9hm71Aa+lhH9sEi4W/6epgbzVI5EWSeTy2SrqyY+ETlIz3LTprSpofSWz4";
 
-    //AccessToken Timeout set to 2 min
-    private static final Long EXPIRATION_TIME = 1000L * 60 * 2;
+    //AccessToken Timeout set to 1 min
+    private static final Long EXPIRATION_TIME = 1000L * 60 * 1;
 
     public static String generateJwtToken(UserDetails userDetails){
         return generateJwtToken(new HashMap<>(), userDetails);
